@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Data Includes Left Outer Join view</title>
+    <style>
+        .shadow {
+            -webkit-border-radius: 0% 0% 100% 100% / 0% 0% 8px 8px;
+            -webkit-box-shadow: rgba(0, 0, 0,.30) 0 2px 3px;
+        }
+        .container {
+            margin: 0 auto;
+            margin-top: 50px;
+            background: #F2F2F2;
+            border: 1px solid #ccc;
+            box-shadow: 1px 1px 2px #fff inset,
+            -1px -1px 2px #fff inset;
+            border-radius: 3px/6px;
+
+
+        }
+        table a:link {
+            color: #666;
+            font-weight: bold;
+            text-decoration:none;
+        }
+        table a:visited {
+            color: #999999;
+            font-weight:bold;
+            text-decoration:none;
+        }
+        table a:active,
+        table a:hover {
+            color: #bd5a35;
+            text-decoration:underline;
+        }
+        table {
+            font-family:Arial, Helvetica, sans-serif;
+            color:#666;
+            font-size:12px;
+            text-shadow: 1px 1px 0px #fff;
+            background:#eaebec;
+            margin:20px;
+            border:#ccc 1px solid;
+
+            -moz-border-radius:3px;
+            -webkit-border-radius:3px;
+            border-radius:3px;
+
+            -moz-box-shadow: 0 1px 2px #d1d1d1;
+            -webkit-box-shadow: 0 1px 2px #d1d1d1;
+            box-shadow: 0 1px 2px #d1d1d1;
+        }
+        table th {
+            padding:21px 25px 22px 25px;
+            border-top:1px solid #fafafa;
+            border-bottom:1px solid #e0e0e0;
+
+            background: #ededed;
+            background: -webkit-gradient(linear, left top, left bottom, from(#ededed), to(#ebebeb));
+            background: -moz-linear-gradient(top,  #ededed,  #ebebeb);
+        }
+        table th:first-child {
+            text-align: left;
+            padding-left:20px;
+        }
+        table tr:first-child th:first-child {
+            -moz-border-radius-topleft:3px;
+            -webkit-border-top-left-radius:3px;
+            border-top-left-radius:3px;
+        }
+        table tr:first-child th:last-child {
+            -moz-border-radius-topright:3px;
+            -webkit-border-top-right-radius:3px;
+            border-top-right-radius:3px;
+        }
+        table tr {
+            text-align: center;
+            padding-left:20px;
+        }
+        table td:first-child {
+            text-align: left;
+            padding-left:20px;
+            border-left: 0;
+        }
+        table td {
+            padding:18px;
+            border-top: 1px solid #ffffff;
+            border-bottom:1px solid #e0e0e0;
+            border-left: 1px solid #e0e0e0;
+
+            background: #fafafa;
+            background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
+            background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);
+        }
+        table tr.even td {
+            background: #f6f6f6;
+            background: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#f6f6f6));
+            background: -moz-linear-gradient(top,  #f8f8f8,  #f6f6f6);
+        }
+        table tr:last-child td {
+            border-bottom:0;
+        }
+        table tr:last-child td:first-child {
+            -moz-border-radius-bottomleft:3px;
+            -webkit-border-bottom-left-radius:3px;
+            border-bottom-left-radius:3px;
+        }
+        table tr:last-child td:last-child {
+            -moz-border-radius-bottomright:3px;
+            -webkit-border-bottom-right-radius:3px;
+            border-bottom-right-radius:3px;
+        }
+        table tr:hover td {
+            background: #f2f2f2;
+            background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#f0f0f0));
+            background: -moz-linear-gradient(top,  #f2f2f2,  #f0f0f0);
+        }
+    </style>
+</head>
+<body>
+<div class="shadow">
+    <div id="create" name="create" class="container">
+        <a href="index.php?proc=1">Process Fake Data</a> 1 million<br>
+        <a href="index.php?proc=2">Process Fake Data</a>  10 thousand<br><br>
+        <a href="index.php?proc=3">Clear Database</a> so we can start clean
+    </div>
+</div>
+<div class="shadow">
+    <div id="info" name="info" class="container">
+        <button id="showme" onclick="togglebox();">Hide</button><hr>
+        This is built with 2 purposes.<br>
+        1. create a way to see the data in the million records tool.<br>
+        2. to match the requirements of the second assigned task.
+
+        Notes: the links above will actually send you to the building tools for the database.  <br>
+        I created the 100000 records functionality as I figured for this test few would want to actually run for 1 Million records which takes about 20 minutes on my local pc<br>
+        I created the little helper to clear the database so that you could create with no data.<br>
+        The functionality of the load will also create the database and the table if you have not done it. this is to make it simpler than sending a bunch of sql queries to run seperately.<br>
+        Because of this if you do not have the tables you will need to run this with sql privledges that allow creating the db and table.<br>
+        The creation of records may be slowed down in this test because I am creating fake data.  My system (and most others) does not have the resources that would be required to hold in memory an array with 1 million record.<br>
+        In a real world the best solution would likely be to use a  datafile, then read the data (in bulk maybe 1000 lines at a time).  I did not do this, as the request specifically said from array.<br>
+        This was all written procedurally as that also was what I was told you wanted to see.  Usually I would have used a framework, or OOP (MVC) to do this, but again following request.<br>
+        The same generally holds true for the CSS, HTML and javascript on this page.  I would generally have split this out into more files (page.css)(page.js) etc. which could be done easily even as it is<br>
+        the api.php file is written without any real security, as it is out of scope of a test IMHO.  If you would like to see this it could be added with more time.<br>
+        minimal styling across all these aps.  again could do more, but beyond scope of test.<br>
+        Using stored procedures may have also sped this up, but would have created more install requirements so outside scope of a test IMHO<br>
+        github for code : <br>
+        No readme etc. added to github  using as good place to share code, for review. both tests in same github repo<br>
+        Sevrer performance where I am running this is limited, it is a google compute engine(smallest possible size)<br>
+        If I misunderstood any requirements, please informed me and I would be happy to provide updates, to the new requirements.<br>
+
+    </div>
+</div>
+<div class="shadow">
+    <div id="dataControl" name="dataControl" class="container">
+        <div id="load_all" name="load_all" class="simpleBtn">
+            See All User Data - test Fake Data Process <br>
+            Start: <input type="text" id="start" value="0" /><br>
+            Number rows <input type="text" id="limit" value="10" /><br>
+            <button id="runLoadAll" onclick="getAllData();" type="button">RUN</button>
+        </div>
+        <div id="leftctrl" name="leftctrl">Just a test of loading data into select: <select id="rep_select" name="rep_select"></select><br><br><button type="button" onclick="loadReps();">Load Possible (left join example)</button></div>
+    </div>
+</div>
+<div class="shadow">
+    <div id="table" name="table" class="container">
+        <div id="tbl_title" name="tbl_title"></div>
+        <div id="actualTbl" name="actualTbl"></div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+    var start,
+        loadSelectButton,
+        loadReps,
+        togglebox,
+        getAllData;
+    $(function() {
+        start();
+    });
+    start = function(){
+      //load select button
+        loadSelectButton();
+    };
+    loadSelectButton = function(){
+        $.ajax({
+            type:"GET",
+            dataType: "json",
+            url: "api.php",
+            data: {"proc":"1"},
+            success: function(data){
+                $("#rep_select").empty();
+                $.each(data, function(index, val){
+                    $("#rep_select").append("<option value='" + val + "'>" + val + "</option>");
+                })
+            }
+        });
+    };
+    togglebox = function(){
+        console.log($("#info").height());
+      if($("#info").height() < 30){
+          $("#info").height(500).css({'overflow':'hidden'});
+          $("#showme").html("Hide");
+      } else {
+          $("#info").height(25).css({'overflow':'hidden'});
+          $("#showme").html("Show");
+      }
+    };
+    getAllData = function(){
+        var start,
+            limit;
+        start = $("#start").val();
+        limit = $("#limit").val();
+        $("#actualTbl").empty();
+        $("#actualTbl").append("<table id='allData' name='alldata'></table>");
+        $("#allData").append("<thead><tr><th>User_name</th><th>First_name</th><th>Last_name</th><th>Email</th><th>Pass</th><th>Phone</th><th>Address</th><th>City</th><th>State</th><th>Country</th><th>Zip</th></tr></thead>");
+        $("#allData").append("<tbody id='alldatabody'></tbody>");
+        $.ajax({
+            type:"GET",
+            dataType: "json",
+            url: "api.php",
+            data: {"proc":"3","start":start,"limit":limit},
+            success: function(data){
+                $.each(data,function(index,val){
+                    $("#alldatabody").append("<tr><td>"+val["user_name"]+"</td><td>"+val["first_name"]+"</td><td>"+val["last_name"]+"</td><td>"+val["email"]+"</td><td>"+val["pass"]+"</td><td>"+val["phone"]+"</td><td>"+val["address"]+"</td><td>"+val["city"]+"</td><td>"+val["state"]+"</td><td>"+val["country"]+"</td><td>"+val["postal_code"]+"</td></tr>");
+                })
+            }
+        });
+    };
+    loadReps = function(){
+      var repname;
+        $("#actualTbl").empty();
+        $("#actualTbl").append("<table id='allData' name='alldata'></table>");
+        $("#allData").append("<thead><tr><th>User_name</th><th>First_name</th><th>Last_name</th><th>Email</th><th>State</th><th>RepName</th></tr></thead>");
+        $("#allData").append("<tbody id='alldatabody'></tbody>");
+        $.ajax({
+            type:"GET",
+            dataType: "json",
+            url: "api.php",
+            data: {"proc":"2"},
+            success: function(data){
+                $.each(data,function(index,val){
+                    $("#alldatabody").append("<tr><td>"+val["user_name"]+"</td><td>"+val["first_name"]+"</td><td>"+val["last_name"]+"</td><td>"+val["email"]+"</td><td>"+val["state"]+"</td><td>"+val["repname"]+"</td></tr>");
+                })
+            }
+        });
+
+    };
+</script>
+</body>
+</html>
